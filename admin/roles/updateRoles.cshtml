@@ -1,0 +1,42 @@
+﻿@{
+   Layout="~/admin/shared_admin/_layout1.cshtml";
+    var currentRoles = Roles.GetAllRoles(); 
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <table width="100%"  border="10" cellspacing="0px" cellpadding="0">
+        <tr><td>   <table width="100%"  border="0" cellspacing="10px" cellpadding="0" align="center" style="margin-left: 200px" >
+		<tr ><h2 style="margin-left: 300px; color: #0026ff ; "> Update Roles </h2></tr>
+
+        <div> 
+            @if(currentRoles.Length > 0) 
+            { 
+                @* List all current roles *@ 
+                <ul> 
+                @foreach(var role in currentRoles) 
+                { 
+                    <li style="margin-left: 280px"><a href="update?roleName=@role">@role</a></li> 
+                } 
+                </ul> 
+            } 
+            else 
+            { 
+                <p style="margin-left: 280px; color: #0026ff">No roles currently defined.</p> 
+            } 
+        </div> 
+
+        
+            		</table>
+        </td>
+        </tr>
+        </table>
+
+    </body>
+</html>

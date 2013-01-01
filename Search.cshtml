@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "~/shared/_layout1.cshtml"; 
+    Page.Title = "Catalog Search"; 
+    var db = Database.Open("fashionStore"); 
+    var searchSelect = Request.Form["searchSelect"];
+    var sqlSelect = "";
+    if(searchSelect=="Category")
+    {
+        sqlSelect = "SELECT * FROM Product WHERE " + 
+        "pCategory LIKE @0"; 
+    } 
+    else if(searchSelect=="Price")
+    {
+        sqlSelect = "SELECT * FROM Product WHERE " + 
+        "pPrice LIKE @0"; 
+    
+    }   
+    var searchWords = Request["searchTerm"].Split(' '); 
+    IEnumerable<dynamic> result = Enumerable.Empty<string>(); 
+        foreach(var word in searchWords) 
+        { 
+            result = result.Concat(db.Query(sqlSelect, "%" + word + "%").ToList()); 
+        }
+         
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <table width="100%"  border="10" cellspacing="0" cellpadding="0" align="center">
+		<tr><td>
+        <h1 style="color:#ff6a00; margin-left: 400px">Search Result</h1> 
+        
+        <p style="color:#0094ff; margin-left: 350px">@result.Count() products found matching: <em>@Request["searchTerm"]</em></p> 
+        <ul id="searchResult"> 
+        <table width="734"  border="0" cellspacing="0" cellpadding="0">
+		 <tr>
+			
+	            @foreach (var item in result) 
+                { 
+                 <li> 
+            <td>           @productHelper.defaultPage(item.pImage,item.pName,item.pPrice)</td>
+                  </li> 
+                } 
+            
+				</tr>
+				</table>
+                
+        </ul> 
+        
+    </body>
+</html>

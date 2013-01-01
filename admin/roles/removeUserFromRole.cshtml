@@ -1,0 +1,42 @@
+﻿@{ 
+    Layout="~/admin/shared_admin/_layout1.cshtml";
+    var userName = Request["userName"]; 
+    var roleName = Request["roleName"]; 
+    if(IsPost) 
+    { 
+        // Remove user from role 
+        if (Roles.IsUserInRole(userName, roleName)) 
+        { 
+            Roles.RemoveUsersFromRoles(new [] { userName }.ToArray(),new [] { roleName }.ToArray()); 
+        } 
+        Response.Redirect("update?roleName=" + roleName); 
+    } 
+} 
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="utf-8" /> 
+        <title>Remove User From Role</title> 
+    </head> 
+    <body> 
+         <table width="100%"  border="10" cellspacing="0px" cellpadding="0">
+        <tr><td>   <table width="100%"  border="0" cellspacing="10px" cellpadding="0" align="center" style="margin-left: 200px" >
+		<tr ><h2 style="margin-left: 300px; color: #0026ff ; "> Remove User From Role </h2></tr>
+
+        <p style="margin-left: 300px">Are you sure to remove user "@userName" from  "@roleName" role?</p> 
+        <p style="margin-left: 300px"> 
+        <form action="" method="post" style="margin-left: 300px"> 
+            @Html.Hidden("roleName", roleName) 
+            @Html.Hidden("userName", userName) 
+            <input type="submit" value="Remove" />
+            <input type="button"onclick="window.location.href='updateRoles.cshtml?roleName=@roleName';"value="Cancel" /> 
+ 
+        </form> 
+        </p>
+           
+            		</table>
+        </td>
+        </tr>
+        </table> 
+    </body> 
+</html> 

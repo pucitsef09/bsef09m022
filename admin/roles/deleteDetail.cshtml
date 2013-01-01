@@ -1,0 +1,67 @@
+﻿@{
+    Layout="~/admin/shared_admin/_layout1.cshtml"; 
+    var roleName = Request["roleName"]; 
+    if(IsPost) 
+    { 
+        // Assign user to role 
+        var userName = Request["newUser"]; 
+        if (!Roles.IsUserInRole(userName, roleName)) 
+        { 
+            Roles.AddUsersToRoles( 
+            new [] { userName }.ToArray(), 
+            new [] { roleName }.ToArray() 
+            ); 
+        } 
+     } 
+     // Get all current role members 
+     var usersInRole = Roles.GetUsersInRole(roleName); 
+     // Get all users from database and create a list of SelectListItems 
+     var db = Database.Open("fashionStore"); 
+     var sqlCommand = "SELECT userName FROM UserProfile ORDER BY UserName"; 
+     List<SelectListItem> allUsers = new List<SelectListItem>(); 
+     foreach(var item in db.Query(sqlCommand)) 
+     { 
+        allUsers.Add(new SelectListItem { Text = item.UserName }); 
+     } 
+} 
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <table width="100%"  border="10" cellspacing="0px" cellpadding="0">
+        <tr><td>   <table width="100%"  border="0" cellspacing="10px" cellpadding="0" align="center" style="margin-left: 200px" >
+		<tr ><h1 style="margin-left: 300px; color: #0026ff ; "> Delete Role </h1></tr>
+
+       <div style="margin-left: 200px; color: #0026ff ; "> 
+            @if(usersInRole.Length > 0) 
+            { 
+                <h3 style="margin-left: 0px; color: #0026ff ; "> There are following users in this role so you can not delete this. </h3>
+                @* List all current role members *@ 
+                <ul> 
+                @foreach(var user in usersInRole) 
+                { 
+                    <li>@user 
+                
+                    </li> 
+                } 
+                </ul> 
+            } 
+            else 
+            { 
+            <p >No users currently attached to this role.</p> 
+            <p><a href="delete?roleName=@roleName">Delete this role</a></p> 
+            } 
+        </div> 
+        
+        </table>
+        </td>
+        </tr>
+        </table>
+
+    </body>
+</html>
+

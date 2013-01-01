@@ -1,0 +1,50 @@
+﻿@{
+     Layout="~/admin/shared_admin/_layout1.cshtml";
+
+     var msg="";
+     var db =  Database.Open("fashionStore");
+     
+     if(IsPost)
+     {
+         var title = Request["title"];
+        
+
+         if (title.IsEmpty())
+         {
+             ModelState.AddError("title", "*Title is required.");
+         }
+
+          var query = "select * from Category where title=@0";
+          var row = db.QuerySingle(query, title);
+          
+             if(ModelState.IsValid)
+             {
+                 var insertquery = "Insert into Category(title)" + "values (@0)";
+                 db.Execute(insertquery,title);
+                 Response.Redirect("~/admin/adminHome.cshtml");
+             }
+         
+     }
+
+}
+
+ <form id="add_category" method="post" action="" style="border: groove; margin-top: 0px; margin-left: 0px; margin-right: 0px; height: 400px; width: 100%">                    
+           
+          <div style="font-family: Arial; color: #000000; border: initial; width: 500px; height: 50px; margin-left: 10px;"> @Html.ValidationSummary()</div>
+                <div id="title" style="color: #f00; margin-left: 340px; font-family: Calibri"><h2>Add New Category </h2></div> 
+               <div style="margin-left: 120px;margin-top: 50px; margin-left: 300px; color: #fff">
+                 <label><span style="color: #000000"> Category Title:</span></label>
+                 <input type="text" name="title" id="title" value=@Request["title"]>
+               </div>
+              <div class="mybutton" style="margin-left: 400px;margin-top: 30px">
+                  <input type="submit" value="Submit" class="button" />     
+               </div> 
+
+            @if(IsPost)
+            {
+                
+               <p> @msg </p>
+
+            }
+          
+     </form>

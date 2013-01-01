@@ -1,0 +1,42 @@
+﻿@{
+    Layout="~/admin/shared_admin/_layout1.cshtml";
+    var db = Database.Open("fashionStore");
+      var ProductId = UrlData[0];
+      if (ProductId.IsEmpty()) {
+          Response.Redirect("~/admin/category/deleteCategory");
+      }
+      var prod = db.QuerySingle("SELECT * FROM Category WHERE ID = @0", ProductId);
+      if( IsPost && !ProductId.IsEmpty()) {
+        var deleteQueryString = "DELETE FROM Category WHERE Id=@0";
+        db.Execute(deleteQueryString, ProductId);
+        Response.Redirect("~/admin/adminHome");
+        }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link href="@Href("style.css")" rel="stylesheet" type="text/css">
+    
+        <title></title>
+    </head>
+    <body>
+   <table width="100%"  border="10" cellspacing="0px" cellpadding="0">
+   <tr >
+    <tr><td>
+    <table style="margin-left: 300px; border: 10; margin-bottom: 10px; background: #0094ff; color:#f00">
+        <h2 style="margin-left: 380px; color: #0026ff ; "> Delete Category </h2></tr>
+       <form method="post" action="" name="form" style="margin-left: 300px">
+        <p style="margin-left: 200px">Are you sure you want to delete the following Category?</p>
+
+        <p style="margin-left: 200px">Category Name: @prod.title <br />
+        <p style="margin-left: 250px"><input type="submit" value="Delete" /></p>
+      </form>
+    </table>
+        </td>
+       </tr>
+   </table>
+    </body>
+</html>
