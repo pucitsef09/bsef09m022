@@ -1,0 +1,89 @@
+﻿@{
+    Layout = "~/admin/shared_admin/_layout1.cshtml"; 
+    Page.Title = "Order Details"; 
+    // Get orderID from URL, or set to 0 if not present 
+    var orderID = !UrlData[0].IsEmpty() ? UrlData[0] : "0"; 
+    var db = Database.Open("fashionStore"); 
+    if (IsPost) 
+    { 
+        orderID = Request["orderID"]; 
+        var shipped = Request["shipped"].AsBool(); 
+        var sqlUpdate = "UPDATE Orders SET OrderShipped = @0 WHERE OrderId = @1"; 
+        db.Execute(sqlUpdate, shipped, orderID); 
+        Response.Redirect("~/Admin/Orders/"); 
+    } 
+    // Get Order header details 
+    var sqlCommand = "SELECT Orders.* FROM Orders " +"INNER JOIN UserProfile ON Orders.UserId = UserProfile.UserId " + "WHERE OrderId = @0 "; 
+    var order = db.QuerySingle(sqlCommand, orderID); 
+    // Get Order items 
+    var itemsSql = "SELECT * FROM OrderItems WHERE OrderID = @0"; 
+    var orderItems = db.Query(itemsSql, orderID);     
+}
+@if (order == null) 
+{ 
+    <table width="100%"  border="10" cellspacing="0" cellpadding="0" align="center">
+		<tr><td>
+    <p style="margin-left: 300px; color: #ff6a00"> 
+    Unable to fetch order details. 
+    </p> 
+            </td></tr>
+        </table>
+} 
+else 
+{ 
+  <table width="100%"  border="10" cellspacing="0" cellpadding="0" align="center">
+	<tr><td>
+    <text> 
+    <h1 style="color:#ff6a00; margin-left: 400px">Order Detail</h1> 
+    <p style="color:#0094ff; margin-left: 350px"><strong>Order ID:</strong> @order.OrderId</p> 
+    <p style="color:#0094ff; margin-left: 350px"><strong>Ordered: </strong>@order.OrderDateTime</p> 
+    <h1 style="color:#ff6a00; margin-left: 380px">Shipping Detail</h1> 
+    <p style="color:#0094ff; margin-left: 350px"><strong>Address 1:</strong> @order.Address1</p> 
+    <p style="color:#0094ff; margin-left: 350px"><strong>Address 2:</strong> @order.Address2</p> 
+    <p style="color:#0094ff; margin-left: 350px"><strong>Town: </strong>@order.Town</p> 
+    <p style="color:#0094ff; margin-left: 350px"><strong>Region:</strong> @order.Region</p> 
+    <p style="color:#0094ff; margin-left: 350px"><strong>Postal Code:</strong> @order.PostalCode</p> 
+    <p style="color:#0094ff; margin-left: 350px"><strong>Country: </strong>@order.Country</p> 
+    <p style="color:#0094ff; margin-left: 350px"> 
+    <form action="OrderDetails" method="post" id="shippedForm"> 
+        @Html.Hidden("orderId", order.OrderId) 
+        <p style="color:#ff6a00; margin-left: 350px">Order Shipped?@Html.CheckBox("shipped", order.OrderShipped, new { value = "true" }) 
+        <input type="submit" value="Update" /> </p>
+    </form> 
+    </p> 
+    <h1 style="color:#ff6a00; margin-left: 400px">Order Items</h1> 
+    <table id="cartTable"> 
+        <tr> 
+            <th style="color:#ff6a00; margin-left: 350px">Product ID</th> 
+            <th style="color:#ff6a00; margin-left: 350px">Product Size</th> 
+            <th style="color:#ff6a00; margin-left: 350px">Product Price</th> 
+        </tr> 
+        @foreach (var item in orderItems) 
+        { 
+        <tr> 
+            <td class="product" style="color:#0094ff; margin-left: 3500px">@item.ProductID</td> 
+             
+            <td class="size" style="color:#0094ff; margin-left: 3500px">@item.Size</td> 
+            <td class="price" style="color:#0094ff;">$@item.Price</td> 
+        </tr> 
+        } 
+        <tr class="cartTotal"> 
+        <td colspan="2">&nbsp;</td> 
+        <td>Total: $@order.OrderTotal</td> 
+        </tr> 
+    </table> 
+    </text> 
+     </td></tr>
+     </table>
+} 
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        
+    </body>
+</html>

@@ -1,0 +1,16 @@
+﻿@{ 
+Layout = "~/shared/_layout1.cshtml"; 
+Page.Title = "Log Out";
+Cart cart = (Cart)Session["cart"]; 
+if(!(cart==null))
+   { cart.Clear();  }
+WebSecurity.Logout(); 
+} 
+<table width="100%"  border="10" cellspacing="0" cellpadding="0" align="center">
+		<tr><td>
+        
+<h1 style="margin-left: 350px; color: #ff6a00">LogOut</h1> 
+<p style="margin-left: 300px; color: #b6ff00">You have been logged out from the site.</p> 
+<p style="margin-left: 350px; color: #b6ff00"><a href="@Href("~/Default")">Return to home page</a></p> 
+</td></tr>
+        </table>

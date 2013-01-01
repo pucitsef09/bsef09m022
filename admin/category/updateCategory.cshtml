@@ -1,0 +1,52 @@
+﻿@{
+    Layout="~/admin/shared_admin/_layout1.cshtml";
+
+    var db = Database.Open("fashionStore");
+    var q = "SELECT * FROM Category ORDER BY id";
+    var data = db.Query(q);
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+
+        <title>Update Products</title>
+        <style type="text/css">
+        table, th, td {
+          border: solid 1px #bbbbbb;
+          border-collapse: collapse;
+          padding: 2px;
+        }
+    </style>
+    </head>
+    <body>
+        
+    
+   <table width="100%"  border="10" cellspacing="0px" cellpadding="0">
+   <tr >
+    <tr><td>
+    <table style="margin-left: 300px; border: 10; margin-bottom: 10px; background: #0094ff; color:#f00">
+        <h2 style="margin-left: 380px; color: #0026ff ; "> Update Category </h2></tr>
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th>Title</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var row in data) {
+          <tr>
+            <td><a href="@Href("~/admin/category/Update", row.Id)">Update</a></td>
+            <td>@row.title</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+       </td>
+       </tr>
+       </table>
+
+    </body>
+</html>

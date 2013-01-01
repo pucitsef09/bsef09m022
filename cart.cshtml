@@ -1,0 +1,102 @@
+﻿@{
+    Layout = "~/shared/_layout1.cshtml";
+    Page.Title = "Cart";
+
+  //      Dictionary<string, string> pIDs = (Dictionary<string, string>) Session["productList"];
+    // Create a blank cart in Session if not present 
+    if (Session["cart"] == null) 
+    { 
+        Session["cart"] = new Cart(); 
+    } 
+    // Get current cart from Session 
+    Cart cart = (Cart)Session["cart"]; 
+    if (IsPost) 
+    { 
+        if (Request["productID"] != null) 
+        {
+            // Form posted from Product Details Page
+            var productID = Request["productID"]; 
+            var productName = Request["productName"];
+            var size = Request["size"]; 
+            var price = Request["Price"]; 
+            cart.AddItem(productID.AsInt(), productName, size, price.AsDecimal()); 
+        }
+        else if (Request["removeIndex"] != null) 
+        { 
+            // Form posted by Cart Remove Item button 
+            var removeIndex = Request["removeIndex"].AsInt(); 
+            cart.RemoveItem(removeIndex); 
+        }
+    }
+    Session["productList"] = cart; 
+    int totalPrice = 0;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <table width="100%"  border="10" cellspacing="0" cellpadding="0" align="center">
+		<tr><td>
+
+        <h1 style="margin-left: 400px; color: #ff6a00">Shopping Cart</h1> 
+        @if(cart.Items.Count() == 0) 
+        { 
+            <p style="margin-left: 300px; color: #ff6a00">There are no items in your shopping cart.</p> 
+        } 
+        else 
+        { 
+        <text> 
+            <table id="cartTable" style="margin-left: 0px; color: #ff6a00;" cellspacing="5"> 
+                <tr  style="margin-left: 0px; color: #ff6a00"> 
+                    <th class="product"  style="color: #ff6a00">Product ID</th> 
+                    <th class="product"  style="color: #ff6a00">Product Name</th>
+                    <th class="size" style="color: #ff6a00">Size</th> 
+                    <th  style=" color: #ff6a00">Price</th> 
+                    <th>&nbsp;</th>
+                </tr> 
+                @{ 
+                    // Declare and initialise index variable, i 
+                    int i = 0; 
+                }
+                @foreach (var item in cart.Items) 
+                { 
+                    <tr> 
+                        <td class="product" style=" color: #ff6a00">@item.ProductID</td>
+                         <td class="product" style=" color: #ff6a00">@item.ProductName</td>
+                        <td class="size" style=" color: #ff6a00">@item.Size</td> 
+                        <td  style=" color: #ff6a00">$@item.Price@{ totalPrice += Convert.ToInt32( item.Price); }</td>}     
+                        <td class="remove"> 
+
+                            <form action="Cart" method="post"> 
+                            @Html.Hidden("removeIndex", i) 
+                            <input type="submit" value="Remove" /> 
+                            </form> 
+                        </td> 
+                        <tr>@{ Session["totalPrice"] = totalPrice; }</tr>   
+                    </tr> 
+                    // increment index 
+                    i++; 
+                } 
+                <tr class="cartTotal"> 
+                    <td colspan="2">&nbsp;</td>
+                    <td  style=" color: #ff6a00">Total: @totalPrice</td>
+                    
+                    <td>&nbsp;</td>  
+                </tr>
+            </table>     
+              <div id="cartButtons" style="margin-left: 400px; margin-bottom: 30px"> 
+                <a href="/Default" class="linkButton">Continue Shopping</a> 
+                <a href="/Checkout" class="linkButton" style="margin-left: 50px">Proceed to Checkout</a> 
+                </div>  
+
+        </text> 
+        }
+       </td></tr>
+      </table> 
+    </body>
+</html>

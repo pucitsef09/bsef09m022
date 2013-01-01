@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "~/shared/_layout1.cshtml";
+    
+      var db = Database.Open("fashionStore");
+       
+       var c = "Select * From Category";
+        var catName = db.Query(c);
+        var sqlSelect="";
+
+       if(!UrlData[0].IsEmpty()){
+        var cat = UrlData[0];
+
+        var catQuery = "Select title From Category WHERE title=@0";
+        catName = db.Query(catQuery, cat);
+                
+
+        sqlSelect = "SELECT id, pName, pImage, pPrice FROM Product WHERE " + 
+        "pCategory Like @0"; 
+  
+    }      
+     
+
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+                <table width="100%"  border="10" cellspacing="0" cellpadding="0" align="center">
+		<tr><td>
+        <h1 style="color:#ff6a00; margin-left: 400px">Search Result</h1> 
+        
+        
+        <ul id="searchResult"> 
+        <table width="734"  border="0" cellspacing="0" cellpadding="0">
+		 <tr>
+			
+	                    @{if(!UrlData[0].IsEmpty())
+                            {
+                            
+                                <ul id="searchResult"> 
+                                @foreach(var item in catName)
+                                {
+                                    var val = db.Query(sqlSelect, item.title);
+                                    
+                                    foreach(var v in val)
+                                    {
+                                        <li> 
+                                          <td>           @productHelper.defaultPage(v.pImage,v.pName,v.pPrice)</td>
+                                        </li> 
+                                    }
+                                }
+                                </ul> 
+                            }
+                            else{
+                                <p><h2 style="margin-left: 300px; color: #ff6a00">No item Found</h2></p>
+                            }
+                            
+                           }
+        			</tr>
+				</table>
+                
+        </ul> 
+        
+
+    </body>
+</html>
